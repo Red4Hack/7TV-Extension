@@ -444,14 +444,28 @@ export const betterttv = {
 	},
 };
 
+const API_CACHE_TTL = 5 * 60 * 1000;
+const apiCache = new Map<string, { data: unknown; timestamp: number }>();
+
 async function doRequest<T = object>(base: string, path: string, method?: string, body?: T): Promise<Response> {
+	const cacheKey = `${base}${path}`;
+	const cached = apiCache.get(cacheKey);
+
+	if (cached && Date.now() - cached.timestamp < API_CACHE_TTL) {
+		log.debugWithObjects(["<API> Cache hit", `${method ?? "GET"} ${cacheKey}`], []);
+		return new Response(JSON.stringify(cached.data), {
+			status: 200,
+			headers: { "Content-Type": "application/json" },
+		});
+	}
+
 	return fetch(`${base}/${path}`, {
 		method,
 		body: body ? JSON.stringify(body) : undefined,
 		headers: body
 			? {
 					"Content-Type": "application/json",
-			  }
+				}
 			: undefined,
 		referrer: location.origin,
 		referrerPolicy: "origin",
@@ -462,6 +476,13 @@ async function doRequest<T = object>(base: string, path: string, method?: string
 			["<API>", `${resp.status} ${resp.statusText}${method ?? "GET"} ${base}/${path}`],
 			[await loggable.json()],
 		);
+
+		if (resp.ok) {
+			try {
+				const data = await resp.clone().json();
+				apiCache.set(cacheKey, { data, timestamp: Date.now() });
+			} catch {}
+		}
 
 		return resp;
 	});

@@ -1,19 +1,19 @@
 
 prod: production
 production:
-	yarn build:prod
+	bun build:prod
 
 dev:
-	yarn build:dev
+	bun build:dev
 
 stage:
-	yarn build:stage
+	bun build:stage
 
 format:
-	yarn format
+	bun format
 
 deps:
-	yarn
+	bun install
 
 lint:
-	yarn lint
+	bun lint

@@ -82,13 +82,22 @@ if (!chrome.scripting) {
 		}
 	});
 } else {
-	chrome.scripting.registerContentScripts([
-		{
-			id: "seventv-youtube",
-			js: ["content.js"],
-			matches: ["*://*.youtube.com/*", "*://*.kick.com/*"],
-		},
-	]);
+	chrome.tabs.onUpdated.addListener((tabId, i, t) => {
+		if (!i.status || !t.url) {
+			return undefined;
+		}
+		if (!activeTabs.has(tabId)) {
+			activeTabs.add(tabId);
+		}
+
+		const loc = new URL(t.url);
+		if (loc.host.includes("youtube.com") || loc.host.includes("kick.com")) {
+			chrome.scripting.executeScript({
+				target: { tabId: tabId },
+				files: ["content.js"],
+			});
+		}
+	});
 }
 
 // DEBUG: reload background runner

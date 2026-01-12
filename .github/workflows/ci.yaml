@@ -58,12 +58,9 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: "18"
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          bun-version: latest
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -72,14 +69,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('bun.lock') }}
 
       - name: Install Dependencies
         run: |
-          yarn
+          bun install
 
       - name: Run Linter
-        run: yarn lint
+        run: bun lint
 
       - name: Build App
         env:
@@ -87,8 +84,8 @@ jobs:
           EXTENSION_ID_MOZ: ${{ (inputs.branch == 'stable' && env.EXTENSION_ID_AMO) || env.NIGHTLY_EXTENSION_ID_AMO }}
 
         run: |
-          OUT_DIR=mv3 yarn build:prod
-          OUT_DIR=mv2 MOZILLA_ID=${{ env.EXTENSION_ID_MOZ }} MV2=true yarn build:prod
+          OUT_DIR=mv3 bun build:prod
+          OUT_DIR=mv2 MOZILLA_ID=${{ env.EXTENSION_ID_MOZ }} MV2=true bun build:prod
 
       - name: Create Build Archives
         run: |
@@ -248,23 +245,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: "18"
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          bun-version: latest
 
       - name: Install Dependencies
         run: |
-          yarn
+          bun install
 
       - name: Build (Hosted)
         env:
           BRANCH: ${{ (inputs.branch != 'stable' && 'nightly') || '' }}
           MANIFEST_NAME: ${{ (inputs.stage-host && 'Stage') || ''}}
         run: |
-          yarn build-hosted:prod
+          bun build-hosted:prod
 
       - name: Upload to Host
         uses: shallwefootball/s3-upload-action@master
@@ -284,9 +278,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: "18"
+          bun-version: latest
 
       # Retrieve the non-CRX MV3 zip to be uploaded to CWS
       - name: Download Artifact (Build)

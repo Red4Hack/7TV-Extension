@@ -69,7 +69,7 @@ Getting the extension to work locally is fast and easy, follow these steps:
 
 -   Clone the repo: `git clone git@github.com:SevenTV/Extension.git`
 -   Install dependencies: `make deps`
--   Run `yarn start`
+-   Run `bun start`
 
 The extension will now be compiled into its initial bundle, which may take up to twenty seconds. In dev mode, it is configured to connect to the vite server, which will start right after the bundle is complete.
 

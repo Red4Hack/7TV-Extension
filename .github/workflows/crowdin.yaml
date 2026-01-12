@@ -42,14 +42,14 @@ jobs:
             UPDATE_BRANCH: ci/update-locale
             BASE_BRANCH: master
         steps:
-            - name: Setup Node
-              uses: actions/setup-node@v3.5.1
+            - name: Setup Node & Bun
+              uses: oven-sh/setup-bun@v1
               with:
-                  node-version: 18
+                  bun-version: latest
 
             - name: Install Dependencies
               run: |
-                  yarn global add prettier ts-node @types/node typescript
+                  bun install --global prettier ts-node @types/node typescript
 
             - name: Checkout
               uses: actions/checkout@v3

@@ -285,7 +285,7 @@ db.ready().then(async () => {
 			data.userEmoteSets[userID].set(setID, set);
 		}
 
-		log.debug("<Cosmetics>", "Assigned Emote Set to user", `id=${setID}`, `userID=${userID}`);
+		//log.debug("<Cosmetics>", "Assigned Emote Set to user", `id=${setID}`, `userID=${userID}`);
 	}
 
 	// Handle user entitlements

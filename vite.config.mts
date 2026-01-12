@@ -68,6 +68,8 @@ export default defineConfig(() => {
 				"@": path.resolve(__dirname, "src"),
 				"@locale": path.resolve(__dirname, "locale"),
 				"vue-i18n": "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js",
+				// Apollo Client 4.x compatibility shim for @vue/apollo-composable
+				"@apollo/client/core/index.js": path.resolve(__dirname, "src/util/apollo-compat.ts"),
 			},
 		},
 
