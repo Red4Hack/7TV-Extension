@@ -253,7 +253,7 @@ watch(() => [ctx.filter, sets, cosmetics.emoteSets], filterSets, {
 });
 </script>
 <style scoped lang="scss">
-@import "@/assets/style/flair";
+@use "@/assets/style/flair" as *;
 
 .seventv-emote-menu-tab-container {
 	display: grid;

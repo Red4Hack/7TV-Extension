@@ -119,7 +119,7 @@ if (domain === "twitch.tv") {
 </script>
 
 <style lang="scss">
-@import "@/assets/style/global";
+@use "@/assets/style/global" as *;
 
 #seventv-emoji-container {
 	position: fixed;

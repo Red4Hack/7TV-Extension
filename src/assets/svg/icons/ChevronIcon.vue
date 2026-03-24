@@ -22,5 +22,5 @@ defineProps<{
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/style/icon-direction";
+@use "@/assets/style/icon-direction" as *;
 </style>

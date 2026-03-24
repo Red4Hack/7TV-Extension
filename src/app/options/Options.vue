@@ -36,7 +36,7 @@ document.body.setAttribute("theme", "dark");
 </script>
 
 <style lang="scss">
-@import "@/assets/style/global";
+@use "@/assets/style/global" as *;
 
 html[data-seventv-app] {
 	box-sizing: border-box;

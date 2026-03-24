@@ -24,7 +24,7 @@ const setting = useConfig<boolean>(props.node.key);
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/style/shape";
+@use "@/assets/style/shape" as *;
 
 .seventv-toggle-outer {
 	display: flex;

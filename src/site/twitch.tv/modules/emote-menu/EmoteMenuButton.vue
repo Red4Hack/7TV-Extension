@@ -34,8 +34,8 @@ watch(
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/style/tw-tooltip";
-@import "@/assets/style/flair";
+@use "@/assets/style/tw-tooltip" as *;
+@use "@/assets/style/flair" as *;
 
 .seventv-emote-menu-update-flair {
 	position: absolute;

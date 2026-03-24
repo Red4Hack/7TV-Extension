@@ -44,8 +44,8 @@ if (menuButtons) {
 }
 </script>
 <style scoped lang="scss">
-@import "@/assets/style/tw-tooltip";
-@import "@/assets/style/flair";
+@use "@/assets/style/tw-tooltip" as *;
+@use "@/assets/style/flair" as *;
 
 .top-nav {
 	.seventv-settings-menu-button {
