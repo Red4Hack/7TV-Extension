@@ -1,5 +1,9 @@
 ### 3.1.16
 
+
+- Fixed emote menu not showing emotes with same name but different casing
+- Fixed animated avatars not working
+- Bump package version to 3.1.16
 - Added support for peer channel emote sets in chat data
 - Migrated from Yarn to Bun for package management
 - Fixed autoclaim by adding random delay to prevent claim spamming
@@ -10,6 +14,7 @@
 - Updated background script to handle tab updates more efficiently
 - Updated TypeScript configuration to generate declaration files
 - Updated dependencies to latest versions compatible with Bun
+
 
 ### 3.1.15
 
