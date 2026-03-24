@@ -13,80 +13,69 @@ const m = new WeakMap<ChannelContext, ChatEmotes>();
 const emojiSets = {} as Record<string, SevenTV.EmoteSet>;
 const emojis = {} as Record<string, SevenTV.ActiveEmote>;
 
-export function useChatEmotes(ctx: ChannelContext) {
-	let x = m.get(ctx);
-	if (!x) {
-		x = reactive<ChatEmotes>({
-			active: reactive({}),
-			sets: reactive({}),
-			emojis: reactive(emojis),
-			providers: {
-				"7TV": reactive({}),
-				FFZ: reactive({}),
-				BTTV: reactive({}),
-				PLATFORM: reactive({}),
-				EMOJI: reactive(emojiSets),
-			},
-		});
+function createChatEmotes(): ChatEmotes {
+	return reactive<ChatEmotes>({
+		active: reactive({}),
+		sets: reactive({}),
+		emojis: reactive(emojis),
+		providers: {
+			"7TV": reactive({}),
+			FFZ: reactive({}),
+			BTTV: reactive({}),
+			PLATFORM: reactive({}),
+			EMOJI: reactive(emojiSets),
+		},
+	});
+}
 
-		m.set(ctx, x);
-	}
-
-	function reset() {
-		if (!x) return;
-
-		for (const k in x.providers) {
-			if (k === "EMOJI") continue;
-
-			for (const k2 in x.providers[k as SevenTV.Provider]) {
-				delete x.providers[k as SevenTV.Provider][k2];
-			}
-		}
-
-		for (const k in x.active) {
-			const ae = x.active[k];
-			if (ae.provider === "EMOJI") continue;
-			delete x.active[k];
-		}
-	}
-
-	function byProvider(provider: SevenTV.Provider) {
-		if (!x) return {};
-
-		return x.providers[provider];
-	}
-
-	function find(f: (ae: SevenTV.ActiveEmote) => boolean, activeOnly = false): SevenTV.ActiveEmote | null {
-		if (!x) return null;
-
-		if (activeOnly) {
-			for (const ae of Object.values(x.active)) {
-				if (f(ae)) return ae;
-			}
-		} else {
-			for (const provider of Object.values(x.providers)) {
-				for (const set of Object.values(provider)) {
-					for (const emote of Object.values(set.emotes)) {
-						if (f(emote)) return emote;
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-
-	const r = reactive({
+function wrapChatEmotes(x: ChatEmotes) {
+	return reactive({
 		active: x.active,
 		sets: x.sets,
 		emojis: x.emojis,
 		providers: x.providers,
-		reset,
-		byProvider,
-		find,
+		reset() {
+			for (const k in x.providers) {
+				if (k === "EMOJI") continue;
+				for (const k2 in x.providers[k as SevenTV.Provider]) {
+					delete x.providers[k as SevenTV.Provider][k2];
+				}
+			}
+			for (const k in x.active) {
+				const ae = x.active[k];
+				if (ae.provider === "EMOJI") continue;
+				delete x.active[k];
+			}
+		},
+		byProvider(provider: SevenTV.Provider) {
+			return x.providers[provider];
+		},
+		find(f: (ae: SevenTV.ActiveEmote) => boolean, activeOnly = false): SevenTV.ActiveEmote | null {
+			if (activeOnly) {
+				for (const ae of Object.values(x.active)) {
+					if (f(ae)) return ae;
+				}
+			} else {
+				for (const provider of Object.values(x.providers)) {
+					for (const set of Object.values(provider)) {
+						for (const emote of Object.values(set.emotes)) {
+							if (f(emote)) return emote;
+						}
+					}
+				}
+			}
+			return null;
+		},
 	});
+}
 
-	return r;
+export function useChatEmotes(ctx: ChannelContext) {
+	let x = m.get(ctx);
+	if (!x) {
+		x = createChatEmotes();
+		m.set(ctx, x);
+	}
+	return wrapChatEmotes(x);
 }
 
 export function convertEmojis(): void {

@@ -2,7 +2,7 @@
 
 ## Build job (`ci`)
 
-- Builds the chrome extension with `yarn build:prod` and firefox extension with `MOZILLA_ID=moz-addon-prod@7tv.app MV2=true yarn build:prod`
+- Builds chrome extension with `bun build:prod` and firefox extension with `MOZILLA_ID=moz-addon-prod@7tv.app MV2=true bun build:prod`
 - Both builds get zipped
 - For chrome: Create CRX from zip with action `cardinalby/webext-buildtools-chrome-crx-action@v2` and private key `secrets.WEB_EXTENSION_CRX`
 - For Firefox: Create XPI from zip with action `kewisch/action-web-ext@v1`
@@ -16,7 +16,7 @@
 
 ## Side loading deploy job (`deploy`)
 
-- Builds with `yarn build-hosted:prod`
+- Builds with `bun build-hosted:prod`
 - Uploads to Cloudflare R2 with action `shallwefootball/s3-upload-action@master`
   - Endpoint: `secrets.R2_API_ENDPOINT`
   - Access Key: `secrets.R2_API_AK`

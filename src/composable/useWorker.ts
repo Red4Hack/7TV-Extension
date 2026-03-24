@@ -9,6 +9,8 @@ const workerLog = new Logger();
 workerLog.setContextName("Worker/Pipe");
 
 let worker: SharedWorker | null = null;
+let workerReady = false;
+const messageQueue: Array<() => void> = [];
 
 type WorkerAddrMap = Record<string, string>;
 
@@ -68,15 +70,24 @@ async function init(originURL: string): Promise<SharedWorker> {
 	return new Promise<SharedWorker>((resolve, reject) => {
 		if (!workerURL) return reject("No address to worker");
 
+		log.info("Creating SharedWorker...", `addr=${workerURL}`);
+
 		// Spawn or connect to worker
 		sw = worker = new SharedWorker(workerURL, {
 			name: "seventv-extension",
 		});
+
+		log.info("Worker created, port state:", sw.port.onmessage);
+
 		sw.port.start();
+
+		log.info("Port started, setting up handlers...");
 
 		// Define message handlers
 		useGlobalHandlers(sw.port);
 		useHandlers(sw.port);
+
+		log.info("Handlers set up, waiting for INIT...");
 
 		// Emit close on page exit
 		addEventListener("beforeunload", () => {
@@ -89,6 +100,15 @@ async function init(originURL: string): Promise<SharedWorker> {
 
 function sendMessage<T extends WorkerMessageType>(type: T, data: TypedWorkerMessage<T>): void {
 	if (!worker) return;
+
+	if (!workerReady) {
+		messageQueue.push(() => {
+			if (worker) {
+				worker.port.postMessage({ type, data });
+			}
+		});
+		return;
+	}
 
 	worker.port.postMessage({
 		type: type,
@@ -127,6 +147,9 @@ function useHandlers(mp: MessagePort) {
 
 		switch (type) {
 			case "INIT": {
+				workerReady = true;
+				messageQueue.forEach((fn) => fn());
+				messageQueue.length = 0;
 				events.emit("ready", {});
 				break;
 			}

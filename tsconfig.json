@@ -14,6 +14,9 @@
 		"types": ["vite/client", "chrome"],
 		"skipLibCheck": true,
 		"baseUrl": ".",
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"declarationDir": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"CHANGELOG": ["./CHANGELOG.md"]

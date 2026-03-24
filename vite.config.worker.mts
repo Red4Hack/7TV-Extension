@@ -26,6 +26,8 @@ export default defineConfig(() => {
 		resolve: {
 			alias: {
 				"@": path.resolve(__dirname, "src"),
+				// Apollo Client 4.x compatibility shim for @vue/apollo-composable
+				"@apollo/client/core/index.js": path.resolve(__dirname, "src/util/apollo-compat.ts"),
 			},
 		},
 
